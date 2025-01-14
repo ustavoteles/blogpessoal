@@ -16,8 +16,11 @@ async function bootstrap() {
   //que impede que um site acesse recursos de outro site
 
   //Habilitando o Cors
+  //faz com que a aplicação converse com outro servidor
+  //recebendo requisições de outro
   app.enableCors();
 
+  //configurando para o nest escutar a porta 4000
   await app.listen(process.env.PORT ?? 4000);
 }
 bootstrap();
