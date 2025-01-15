@@ -27,8 +27,11 @@ export class PostagemService {
     });
     //await espera que o findOne traga um resultado, mas nao trava a aplicação
 
+    //if aonde se a postagem não for encontrada,
+    // ele retorna um erro
     if (!postagem) throw new HttpException('Postagem nao encontrada', 404);
 
+    //return fazendo a função de um else
     return postagem;
   }
 
