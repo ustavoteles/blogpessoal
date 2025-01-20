@@ -17,13 +17,21 @@ export class TemaService {
   //select * from tb_temas
   async findAll(): Promise<Tema[]> {
     //Tema[] = array de objetos do tipo Tema
-    return await this.temaRepository.find();
+    return await this.temaRepository.find({
+      relations: {
+        postagem: true, //retorna as postagens relacionadas ao tema
+      },
+    });
   }
 
   async findById(id: number): Promise<Tema> {
     const tema = await this.temaRepository.findOne({
       where: {
         id,
+      },
+      relations: {
+        //relations serve para trazer as postagens relacionadas ao tema
+        postagem: true,
       },
     });
 
@@ -37,6 +45,9 @@ export class TemaService {
     return await this.temaRepository.find({
       where: {
         descricao: ILike(`%${descricao}%`),
+      },
+      relations: {
+        postagem: true,
       },
     });
   }
@@ -54,7 +65,11 @@ export class TemaService {
   }
 
   async deleteTema(id: number): Promise<DeleteResult> {
-    await this.findById(id);
+    let buscaTema = await this.findById(id);
+
+    if (!buscaTema)
+      throw new HttpException('Tema não encontrado', HttpStatus.NOT_FOUND);
+
     return await this.temaRepository.delete(id);
   }
 }

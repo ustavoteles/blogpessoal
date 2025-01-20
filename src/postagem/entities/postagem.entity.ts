@@ -3,9 +3,12 @@ import { IsNotEmpty } from 'class-validator';
 import {
   Column,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Tema } from '../../tema/entities/tema.entity';
+import { Usuario } from '../../usuario/entities/usuario.entity';
 
 @Entity({ name: 'tb_postagens' }) //CREATE TABLE tb_postagens()
 export class Postagem {
@@ -28,4 +31,17 @@ export class Postagem {
 
   @UpdateDateColumn() //atualiza a data toda vez que for alterado
   data: Date;
+
+  @ManyToOne(() => Tema, (tema) => tema.postagem, {
+    onDelete: 'CASCADE', //// Deletar um tema também deleta todas as postagens relacionadas
+    //o inverso nao acontece
+  }) //muitas postagens para um tema
+  tema: Tema;
+  //tema é uma instancia da classe Tema
+  //criado para fazer a relação entre as tabelas
+
+  @ManyToOne(() => Usuario, (usuario) => usuario.postagem, {
+    onDelete: 'CASCADE',
+  })
+  usuario: Usuario;
 }

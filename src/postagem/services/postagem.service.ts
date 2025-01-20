@@ -1,7 +1,8 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Postagem } from '../entities/postagem.entity';
 import { DeleteResult, ILike, Repository } from 'typeorm';
+import { TemaService } from '../../tema/services/tema.service';
 
 @Injectable()
 //esse decorador é necessário para que a classe
@@ -12,10 +13,16 @@ export class PostagemService {
     //o injectRepository é um decorador
     // que injeta o repositório (Postagem)
     private postagemRepository: Repository<Postagem>,
+    private TemaService: TemaService, //injetando o serviço de tema para poder usar na postagem
   ) {}
 
   async findAll(): Promise<Postagem[]> {
-    return this.postagemRepository.find(); //SELECT * FROM postagem
+    return this.postagemRepository.find({
+      relations: {
+        tema: true,
+        usuario: true,
+      },
+    }); //SELECT * FROM postagem
   }
 
   //SELECT * FROM postagem WHERE id = ?;
@@ -23,6 +30,10 @@ export class PostagemService {
     const postagem = await this.postagemRepository.findOne({
       where: {
         id,
+      },
+      relations: {
+        tema: true,
+        usuario: true,
       },
     });
     //await espera que o findOne traga um resultado, mas nao trava a aplicação
@@ -40,18 +51,29 @@ export class PostagemService {
       where: {
         titulo: ILike(`%${titulo}%`), //like esta igual no mysql, o i é insensitive
       },
+      relations: {
+        tema: true,
+        usuario: true,
+      },
     }); //SELECT * FROM postagem
   }
 
+  //INSERT INTO postagem (titulo, conteudo) VALUES (?, ?);
   async create(postagem: Postagem): Promise<Postagem> {
-    //INSERT INTO postagem (titulo, conteudo) VALUES (?, ?);
+    await this.TemaService.findById(postagem.tema.id); //verifica se o tema existe
     return await this.postagemRepository.save(postagem);
   } //salva a entidade postagem no banco de dados e torna com atualizações
 
   async update(postagem: Postagem): Promise<Postagem> {
+    if (!postagem.id || postagem.id <= 0)
+      throw new HttpException('Postagem inválida', HttpStatus.BAD_REQUEST);
+
     //o findbyid ja retorna um erro caso não encontre
     //entao nao é necessario essa validação novamente
+
     await this.findById(postagem.id);
+
+    await this.TemaService.findById(postagem.tema.id); //verifica se o tema existe
 
     // UPDATE tb_postagens SET titulo = postagem.titulo, texto = postagem.texto,
     //  data = CURRENT_TIMESTAMP() WHERE id = ?;
