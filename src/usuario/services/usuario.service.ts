@@ -8,12 +8,12 @@ import { Bcrypt } from '../../auth/bcrypt/bcrypt';
 export class UsuarioService {
   constructor(
     @InjectRepository(Usuario)
-    private usuarioRepostiory: Repository<Usuario>,
+    private usuarioRepository: Repository<Usuario>,
     private bcrypt: Bcrypt,
   ) {}
 
   async findAll(): Promise<Usuario[]> {
-    return await this.usuarioRepostiory.find({
+    return await this.usuarioRepository.find({
       relations: {
         postagem: true,
       },
@@ -21,7 +21,7 @@ export class UsuarioService {
   }
 
   async findById(id: number): Promise<Usuario> {
-    const usuario = await this.usuarioRepostiory.findOne({
+    const usuario = await this.usuarioRepository.findOne({
       where: {
         id,
       },
@@ -37,8 +37,9 @@ export class UsuarioService {
     return usuario;
   }
   //Método auxiliar para Validação do usuario
+
   async findByUsuario(usuario: string): Promise<Usuario | undefined> {
-    return await this.usuarioRepostiory.findOne({
+    return await this.usuarioRepository.findOne({
       where: {
         usuario: usuario,
       },
@@ -54,7 +55,7 @@ export class UsuarioService {
     //criptografando a senha
     usuario.senha = await this.bcrypt.criptografarSenha(usuario.senha);
 
-    return await this.usuarioRepostiory.save(usuario);
+    return await this.usuarioRepository.save(usuario);
   }
 
   async updateUsuario(usuario: Usuario): Promise<Usuario> {
@@ -73,6 +74,6 @@ export class UsuarioService {
     //criptografando a senha
     usuario.senha = await this.bcrypt.criptografarSenha(usuario.senha);
 
-    return await this.usuarioRepostiory.save(usuario);
+    return await this.usuarioRepository.save(usuario);
   }
 }
