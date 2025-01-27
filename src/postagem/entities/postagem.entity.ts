@@ -9,12 +9,15 @@ import {
 } from 'typeorm';
 import { Tema } from '../../tema/entities/tema.entity';
 import { Usuario } from '../../usuario/entities/usuario.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ name: 'tb_postagens' }) //CREATE TABLE tb_postagens()
 export class Postagem {
+  @ApiProperty()
   @PrimaryGeneratedColumn() //define a id como chave primaria e auto increment
   id: number;
 
+  @ApiProperty()
   @Transform(({ value }: TransformFnParams) => value?.trim())
   //remove os espaços em branco, antes e depois do texto
   //evita que o usuário insira espaços em branco
@@ -22,6 +25,7 @@ export class Postagem {
   @Column({ length: 100, nullable: false }) //VARCHAR(100) NOT NULL
   titulo: string;
 
+  @ApiProperty()
   @Transform(({ value }: TransformFnParams) => value?.trim())
   //remove os espaços em branco, antes e depois do texto
   //evita que o usuário insira espaços em branco
@@ -29,9 +33,11 @@ export class Postagem {
   @Column({ length: 1000, nullable: false }) //VARCHAR(500) NOT
   texto: string;
 
+  @ApiProperty()
   @UpdateDateColumn() //atualiza a data toda vez que for alterado
   data: Date;
 
+  @ApiProperty({ type: () => Tema })
   @ManyToOne(() => Tema, (tema) => tema.postagem, {
     onDelete: 'CASCADE', //// Deletar um tema também deleta todas as postagens relacionadas
     //o inverso nao acontece

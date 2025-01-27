@@ -9,11 +9,17 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { TemaService } from '../services/tema.service';
 import { Tema } from '../entities/tema.entity';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../../auth/guard/jwt-auth.guard';
 
+@ApiTags('Tema')
+@UseGuards(JwtAuthGuard)
 @Controller('/temas') //decorator que define a classe como um controller (recebe requisições http)
+@ApiBearerAuth()
 // define o path(caminho) base para as rotas
 export class TemaController {
   constructor(private readonly temaService: TemaService) {}

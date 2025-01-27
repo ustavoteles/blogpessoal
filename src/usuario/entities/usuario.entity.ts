@@ -2,6 +2,7 @@ import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Postagem } from '../../postagem/entities/postagem.entity';
 import { Transform, TransformFnParams } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ name: 'tb_usuarios' })
 export class Usuario {
@@ -11,6 +12,7 @@ export class Usuario {
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @IsNotEmpty()
   @Column({ length: 255, nullable: false })
+  @ApiProperty()
   nome: string;
 
   //255 pois depois será criptografado e aumenta a quantidade de caracteres
@@ -18,6 +20,7 @@ export class Usuario {
   @IsEmail()
   @IsNotEmpty()
   @Column({ length: 255, nullable: false })
+  @ApiProperty({ example: 'email@email.com.br' })
   usuario: string;
 
   @Transform(({ value }: TransformFnParams) => value?.trim())
