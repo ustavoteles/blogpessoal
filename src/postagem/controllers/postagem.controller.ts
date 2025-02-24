@@ -56,20 +56,18 @@ export class PostagemController {
     return this.postagemService.update(postagem);
   }
 
-  /* @Delete('/:id')
-  @HttpCode(HttpStatus.OK)
-  async delete(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<{ message: string }> {
-    await this.postagemService.delete(id);
-    return { message: 'Postagem deletada com sucesso' };
-  }
-  
-  @Delete('/:id') //deleta a postagem com base no id
-  @HttpCode(HttpStatus.NO_CONTENT) //retorna um status 204 e não retorna nada
-  // (no_content é o status de sucesso)
+  @Delete('/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.postagemService.delete(id);
-    //chama o serviço para deletar a postagem e retorna o resultado
-  }*/
+  }
 }
+  
+//   @Delete('/:id') //deleta a postagem com base no id
+//   @HttpCode(HttpStatus.NO_CONTENT) //retorna um status 204 e não retorna nada
+//   // (no_content é o status de sucesso)
+//   delete(@Param('id', ParseIntPipe) id: number) {
+//     return this.postagemService.delete(id);
+//     //chama o serviço para deletar a postagem e retorna o resultado
+//   }*/
+// }
